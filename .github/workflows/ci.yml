@@ -4,13 +4,35 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_network_tests:
+        description: "Lancer aussi les tests réseau (non-régression de la recherche)"
+        type: boolean
+        default: false
 
 jobs:
   fast-tests:
-    # Sans modèle, sans réseau, sans secret.
+    # Sans modèle, sans réseau, sans secret : à chaque push et pull request.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --frozen
       - run: make test
+
+  network-tests:
+    # Appelle l'API (embeddings) et a besoin de l'index Qdrant : seulement à la demande.
+    # À configurer dans Settings > Secrets and variables > Actions : LLM_BASE_URL et LLM_API_KEY.
+    if: github.event_name == 'workflow_dispatch' && inputs.run_network_tests
+    needs: fast-tests
+    runs-on: ubuntu-latest
+    env:
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: make index-titled  # data/qdrant n'est pas versionné : on reconstruit l'index
+      - run: make test-all

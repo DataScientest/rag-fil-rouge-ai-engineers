@@ -1,5 +1,6 @@
-.PHONY: help install env check notebook download corpus pipeline parse index index-titled ask agent eval traces test test-all mcp
+.PHONY: help install install-demo env marimo check notebook download corpus pipeline parse index index-titled ask agent eval traces test test-all mcp
 
+MN ?= notebooks/demo/demo_02b_attention_position.py
 ID ?= F33902
 QUESTION ?= Combien de jours de congé pour mon mariage ?
 VERSION ?= titled
@@ -10,6 +11,9 @@ help: ## Liste les commandes
 install: ## Installe les dépendances (uv sync)
 	uv sync
 
+install-demo: ## Installe aussi torch et transformers (démo 2, plusieurs Go)
+	uv sync --group demo
+
 env: ## Crée .env depuis .env.example s'il n'existe pas
 	@test -f .env || cp .env.example .env
 
@@ -18,6 +22,9 @@ check: ## Vérifie que l'API répond (modèle de chat et embedder)
 
 notebook: ## Ouvre Jupyter dans le navigateur (dossier notebooks/)
 	uv run jupyter notebook notebooks/
+
+marimo: ## Ouvre un carnet marimo dans le navigateur (MN=notebooks/demo/demo_02b_attention_position.py)
+	uvx marimo edit --sandbox $(MN)
 
 download: ## Télécharge et décompresse le XML Service-Public dans data/raw/
 	mkdir -p data/raw

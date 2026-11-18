@@ -49,6 +49,26 @@ make ask QUESTION="Combien de jours de congé pour mon mariage ?"
 
 Les notebooks (`make notebook`) : `01_discover.ipynb` explore les fiches XML brutes (lancer `make download` avant), `explore.ipynb` appelle les fonctions de `src/` pas à pas.
 
+## Les démos de la formation
+
+`notebooks/demo/` contient les démos projetées en masterclass, enregistrées avec leurs sorties : elles se lisent sans rien exécuter. Pour les relancer : `make notebook`, puis ouvrir `demo/`.
+
+| Démo | Sujet | Prérequis |
+|---|---|---|
+| `demo_02` | tokens, attention | `make install-demo` (torch, plusieurs Go) |
+| `demo_02b` | attention et position (carnet marimo) | `make marimo` |
+| `demo_04` | choisir un modèle | clé d'API |
+| `demo_06` | prompting | clé d'API |
+| `demo_07` | API robuste | clé d'API |
+| `demo_08` | RAG live | clé d'API et `make install-demo` (reranker) |
+| `demo_09` | évaluation | clé d'API |
+| `demo_10` | agents | clé d'API |
+| `demo_11` | MCP | `make index-titled` |
+| `demo_12` | coûts, latence, suivi | clé d'API ; LangSmith facultatif |
+| `demo_13` | prod et CI | `make index` et `make index-titled` |
+
+La démo 4 compare aussi des modèles Claude, servis par la passerelle de la formation : avec une clé OpenAI seule, ces cellules échouent (les sorties enregistrées restent lisibles).
+
 ## Bon à savoir
 
 - Le corpus (`data/corpus/`, 55 fiches) et le jeu d'évaluation (`data/eval/ref_v2.jsonl`) sont fournis : rien à télécharger pour l'index et l'évaluation.
